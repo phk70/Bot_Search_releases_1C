@@ -53,7 +53,7 @@ def search_all_versions(file_name):
 # Вытаскиваем все строки (tr) без заголовка
     row_list = table.find_all('tr')[1:]
 # Вытаскиваем из каждой строки колонку и вставляем в список
-    LIST_RELIASE = []
+    LIST_RELEASES = []
     id = 0
     for row in row_list:
         td_list = row.find_all("td")
@@ -62,7 +62,7 @@ def search_all_versions(file_name):
 # Записываем из колонки с версиями для обновлений   
         update_version = td_list[2].text.strip()
 # Добавляем все в список
-        LIST_RELIASE.append({
+        LIST_RELEASES.append({
             'id': id,
             'number_version': number_version,
             'update_version': update_version,
@@ -87,7 +87,7 @@ def serch_my_version(LIST_RELEASES, VERSION):
 
 
 def main():
-    login(URL, USERNAME, PASSWORD)
+    # login(URL, USERNAME, PASSWORD)
     search_all_versions("html_page.html")
     serch_my_version(LIST_RELEASES, VERSION)
 
