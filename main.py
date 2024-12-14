@@ -2,13 +2,15 @@ from charset_normalizer import VERSION
 import requests
 import lxml
 import time
-from env import USERNAME, PASSWORD, URL
 
 from pprint import pprint
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+
+from whatsapp_bot import send_message
+from env import USERNAME, PASSWORD, URL
 
 
 VERSION="1.3.235.2"
@@ -53,7 +55,6 @@ def search_all_versions(file_name):
 # Вытаскиваем все строки (tr) без заголовка
     row_list = table.find_all('tr')[1:]
 # Вытаскиваем из каждой строки колонку и вставляем в список
-    LIST_RELEASES = []
     id = 0
     for row in row_list:
         td_list = row.find_all("td")
@@ -68,22 +69,20 @@ def search_all_versions(file_name):
             'update_version': update_version,
         })
         id += 1
-    print(LIST_RELEASES)
-    return LIST_RELEASES
+        
+
+def serch_my_version(LIST_RELEASES, VERSION):         
+    count=0
+
+    for ver in LIST_RELEASES:  
+        if VERSION in ver['update_version']:    
+            print(f'Вышло обновление {ver['number_version']}.')
+            break  
     
-
-def serch_my_version(LIST_RELEASES, VERSION): 
-
-
-
+            
     
-    pprint(LIST_RELEASES)
-
-
-
     
-
-
+    # pprint(count)
 
 
 def main():
