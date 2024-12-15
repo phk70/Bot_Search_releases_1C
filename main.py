@@ -1,4 +1,3 @@
-from charset_normalizer import VERSION
 import requests
 import lxml
 import time
@@ -9,7 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from whatsapp_bot import send_message
+from send_message_telegram import start, send_message
 from env import USERNAME, PASSWORD, URL
 
 
@@ -74,21 +73,25 @@ def search_all_versions(file_name):
 def serch_my_version(LIST_RELEASES, VERSION):         
     count=0
 
-    for ver in LIST_RELEASES:  
+    for ver in LIST_RELEASES: 
+        count += 1 
         if VERSION in ver['update_version']:    
             print(f'Вышло обновление {ver['number_version']}.')
             break  
     
-            
-    
-    
-    # pprint(count)
+    pprint(count)
+
+
+
+
 
 
 def main():
     # login(URL, USERNAME, PASSWORD)
     search_all_versions("html_page.html")
     serch_my_version(LIST_RELEASES, VERSION)
+    start('Текущая версия')
+    send_message('текущая версия')
 
 if __name__ == "__main__":
     main()
