@@ -1,27 +1,30 @@
-import requests
 import lxml
 import time
+import os
 
 from pprint import pprint
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from dotenv import load_dotenv
 
-from send_message_telegram import start, send_message
-from env import USERNAME, PASSWORD, URL
+load_dotenv()
 
 
-VERSION="1.3.235.2"
 LIST_RELEASES=[]
+
 
 def login(url, username, password):
     print("[+]...Открываю браузер...")
+    print(url, username, password)
     driver = webdriver.Firefox()
+# Входим на сайт
     driver.get(url)
 # Находим и заполняем поле Username
     print("[+]...Ввожу Username...")
-    username_form = driver.find_element(By.ID, "username")    
+    time.sleep(4)
+    username_form = driver.find_element(By.ID, "username")     
     username_form.send_keys(username)  
 # Находим и заполняем поле Password        
     print("[+]...Ввожу Password...")
@@ -34,7 +37,7 @@ def login(url, username, password):
 # Сохраняем страницу
     time.sleep(4)
     html = driver.page_source
-    with open("temp/html_page.html", 'w', encoding="utf-8") as file:
+    with open("list_base.html", 'w', encoding="utf-8") as file:
         file.write(html)
     print("[+]...Веб страница сохранена...")
 # Закрываем браузер
@@ -45,7 +48,7 @@ def login(url, username, password):
 
 def search_all_versions(file_name):
 # Открываем html в переменную data
-    with open(f"temp/{file_name}", 'r', encoding="utf-8") as file:
+    with open(file_name, 'r', encoding="utf-8") as file:
         data = file.read()
 # Запихиваем ее в BS4    
     soup = BeautifulSoup(data, 'lxml')
@@ -70,28 +73,23 @@ def search_all_versions(file_name):
         id += 1
         
 
-def serch_my_version(LIST_RELEASES, VERSION):         
+def serch_my_version(LIST_RELEASES, version):         
     count=0
 
     for ver in LIST_RELEASES: 
         count += 1 
-        if VERSION in ver['update_version']:    
+        if version in ver['update_version']:    
             print(f'Вышло обновление {ver['number_version']}.')
             break  
     
-    pprint(count)
-
-
-
-
+    return f'Доступно обновлений для текущей версии: {count}'
 
 
 def main():
-    # login(URL, USERNAME, PASSWORD)
-    search_all_versions("html_page.html")
-    serch_my_version(LIST_RELEASES, VERSION)
-    start('Текущая версия')
-    send_message('текущая версия')
+    login(os.getenv('URL'), os.getenv('LOGIN'), os.getenv('PASSWORD'))    
+    search_all_versions('list_base.html')
+    serch_my_version(LIST_RELEASES, os.getenv('VERSION'))
+
 
 if __name__ == "__main__":
     main()

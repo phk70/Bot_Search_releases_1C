@@ -1,24 +1,38 @@
-import telebot
-from telebot import types
-from env import TOKEN
-from env import VERSION
+
+from aiogram import Bot, Dispatcher, executor, types
+from aiogram.dispatcher.filters import Text
+
+from main import *
+
+import os
 
 
-bot = telebot.TeleBot(TOKEN)
+bot = Bot(token=os.getenv('TOKEN'))
+dp = Dispatcher(bot)
 
-@bot.message_handler(commands=['start'])
-def start(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn1 = types.KeyboardButton("Текущая версия")
-    btn2 = types.KeyboardButton("Проверить обновление")
-    markup.add(btn1, btn2)
-    bot.send_message(message.chat.id, text="Привет, {0.first_name}!\nЯ бот, проверяющий обновления версий 1С".format(message.from_user), reply_markup=markup)
+
+@dp.message_handler(commands='start')
+async def start(message: types.Message):
+    start_buttons = ['Текущая версия', 'Проверить обновление']
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.add(*start_buttons)
+    await message.answer('Выберите действие', reply_markup=keyboard)
+
     
-@bot.message_handler(content_types=['text'])
-def send_message(message):
-    if(message.text.lower() == "текущая версия"):
-        bot.send_message(message.chat.id, text=f"Текущая версия {VERSION}")
-    elif(message.text.lower() == "проверить обновление"):        
-        bot.send_message(message.chat.id, text="Подождите, проверяю...")
+
+@dp.message_handler(Text(equals='Текущая версия'))
+async def send_version(message: types.Message):
+    await message.answer(f'Текущая версия: {os.getenv("VERSION")}')
+
     
-bot.polling(none_stop=True)
+@dp.message_handler(Text(equals='Проверить обновление'))
+async def send_version(message: types.Message):
+    search_all_versions('list_base.html')
+    await message.answer(serch_my_version(LIST_RELEASES, os.getenv('VERSION')))
+    
+    
+def main():
+    executor.start_polling(dp)
+
+if __name__ == "__main__":
+    main()
