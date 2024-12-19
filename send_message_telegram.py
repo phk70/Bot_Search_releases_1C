@@ -2,6 +2,7 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import Text
 
+
 from main import login, original_version, search_all_versions, serch_up_for_my_version, update_version, VERSION
 
 import os
@@ -14,7 +15,7 @@ dp = Dispatcher(bot)
 @dp.message_handler(commands='start')
 async def start(message: types.Message):
     start_buttons = ['Текущая версия', 'Проверить обновление', 'Обновить версию']
-    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, input_field_placeholder="Что делаем?")
     keyboard.add(*start_buttons)
     await message.answer('Выберите действие', reply_markup=keyboard)
     
@@ -33,19 +34,25 @@ async def search_updates(message: types.Message):
 # Нажатие на кнопку Обновить версию
 @dp.message_handler(Text(equals='Обновить версию'))
 async def update_version_in_sistem(message: types.Message): 
-    up_kb = ["Обновить версию", "Назад"]
-    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    up_kb = ["Обновить", "Назад"]
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, input_field_placeholder="Что делаем?")
     keyboard.add(*up_kb)
-    await message.answer('Выберите действие', reply_markup=keyboard)
+    await message.answer('Введите новую версию в формате X.X.XXX.X', reply_markup=keyboard)
 
-@dp.message_handler(Text(equals='Обновить версию'))
-async def send_version(message: types.Message):
-    if message.text =='Обновить версию':
-        update_version(message.text)        
-        await message.answer(f'Версия обновлена. Текущая версия: {VERSION[0]}')
-    # elif message.text =='Назад':
-    #     start()
-
+# Нажатие на кнопку Обновить
+@dp.message_handler(Text(equals='Обновить'))
+async def up_version(message: types.Message):   
+    update_version(message.text)        
+    await message.answer(f'Версия обновлена. Текущая версия: {original_version(VERSION)}')
+        
+# Нажатие на кнопку Назад
+@dp.message_handler(Text(equals='Назад'))
+async def up_version(message: types.Message):    
+    if 'Назад' in message.text:
+        start_buttons = ['Текущая версия', 'Проверить обновление', 'Обновить версию']
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, input_field_placeholder="Что делаем?")
+        keyboard.add(*start_buttons)
+        await message.answer('Выберите действие', reply_markup=keyboard)
    
     
 def main():
