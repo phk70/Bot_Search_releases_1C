@@ -13,7 +13,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-VERSION="1.3.235.2"
+VERSION=["1.3.235.2"]
+
+def original_version(version):
+    return version[0]
+
 
 def login(url, username, password):
     print("[+]...Открываю браузер...")    
@@ -90,32 +94,32 @@ def serch_up_for_my_version(list_releases, version):
     for ver in data:    
 # Проверяем совпадение текущей версии и списка новых версий   
         try:
-            if (ver['number_version'].split('.')[2] != version.split('.')[2]) and (version not in ver['update_version']):
+            if (ver['number_version'].split('.')[2] != version[0].split('.')[2]) and (version[0] not in ver['update_version']):
                 new_ver = f'Новая версия == {ver['number_version']} от {ver["date_release"]}'           
         except:
             pass
 # Проверяем совпадение текущей версии и списка версий для обновлений
         try:    
-            if version in ver['update_version']:
+            if version[0] in ver['update_version']:
                 count += 1
         except:
             pass        
 # Если доходим до текущей версии прекращам цикл
-        if ver['number_version'] == version:
+        if ver['number_version'] == version[0]:
                 break
 # Возвращаем сообщение
-    message_version = f'База "Управление Торговлей 1.3\n\nТвоя версия == {version}\nДоступно обновлений этой версии == {count}\n{new_ver}\n\nНе мучай себя и коллег...\nПожалуйста обнови версию...'
+    message_version = f'База "Управление Торговлей 1.3\n\nТвоя версия == {version[0]}\nДоступно обновлений этой версии == {count}\n{new_ver}\n\nНе мучай себя и коллег...\nПожалуйста обнови версию...'
     return message_version
 
 def update_version(new_version):
     global VERSION
-    VERSION = new_version
+    VERSION[0] = new_version
     
 
-def main():
-    login(os.getenv('URL'), os.getenv('LOGIN'), os.getenv('PASSWORD'))    
-    search_all_versions('list_base.html')
-    serch_up_for_my_version('list_releases.json', VERSION)   
+# def main():
+#     login(os.getenv('URL'), os.getenv('LOGIN'), os.getenv('PASSWORD'))    
+#     search_all_versions('list_base.html')
+#     serch_up_for_my_version('list_releases.json', VERSION[0])   
 
 
 if __name__ == "__main__":
