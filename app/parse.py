@@ -1,6 +1,4 @@
-import lxml
 import time
-import os
 import json
 
 from bs4 import BeautifulSoup
@@ -8,7 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from dotenv import load_dotenv
-from threading import Timer
+
 
 load_dotenv()
 
@@ -18,15 +16,15 @@ def view_version():
     with open("version.json", 'r', encoding="utf-8") as file:
         version = json.load(file)    
     return version['version']
-    
-    
-        
-# Запись версии в файл
+
+
+# Сохранение текущей версии в файл
 def save_version(version):
     actual_version = {"version": version}
     with open("version.json", 'w', encoding="utf-8") as file:
         json.dump(actual_version, file, indent=4, ensure_ascii=False)
     print(f"[+]...Версия {version} сохранена...")
+
 
 # Вход на сервис 1С
 def login(url, username, password):
@@ -55,9 +53,9 @@ def login(url, username, password):
 # Закрываем браузер
     print("[+]...Закрываю браузер...")
     driver.close()
-    
 
-# Поиск всех версий и запись их в файл
+
+# Поиск всех доступных версий и запись их в файл
 def search_all_versions(file_name):
     list_releases=[]
 # Открываем html в переменную data
@@ -87,7 +85,7 @@ def search_all_versions(file_name):
 # И сохраняем все в json
         with open('list_releases.json', 'w', encoding="utf-8") as file:
             json.dump(list_releases, file, indent=4, ensure_ascii=False)
-    print("[+]...Все версии сохранены...")        
+    print("[+]...Все версии с сайта сохранены...")        
 
 
 # Поиск обновлений для моей версии

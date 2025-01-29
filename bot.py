@@ -2,8 +2,7 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import Text
 from dotenv import load_dotenv
-from main import login, view_version, save_version, search_all_versions, serch_up_for_my_version
-import time
+from app.parse import login, view_version, save_version, search_all_versions, serch_up_for_my_version
 
 import os
 load_dotenv()
@@ -43,6 +42,15 @@ async def update_version_in_sistem(message: types.Message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, input_field_placeholder="")
     keyboard.add(*up_kb)
     await message.answer('Введите новую версию в формате X.X.XXX.X', reply_markup=keyboard)
+
+
+# Нажатие на кнопку Назад
+@dp.message_handler(Text(equals='Назад'))
+async def back(message: types.Message): 
+    start_buttons = ['Текущая версия', 'Проверить обновление', 'Обновить версию']
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, input_field_placeholder="")
+    keyboard.add(*start_buttons)
+    await message.answer('Выберите действие', reply_markup=keyboard)
 
 
 @dp.message_handler()
