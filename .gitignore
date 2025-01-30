@@ -4,3 +4,4 @@ venv
 *.json
 list_base.html
 *.html
+*.sqlite

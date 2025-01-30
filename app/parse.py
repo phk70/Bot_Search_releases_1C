@@ -18,12 +18,12 @@ def view_version():
     return version['version']
 
 
-# Сохранение текущей версии в файл
-def save_version(version):
-    actual_version = {"version": version}
-    with open("version.json", 'w', encoding="utf-8") as file:
-        json.dump(actual_version, file, indent=4, ensure_ascii=False)
-    print(f"[+]...Версия {version} сохранена...")
+# # Сохранение текущей версии в файл
+# def save_version(version):
+#     actual_version = {"version": version}
+#     with open("version.json", 'w', encoding="utf-8") as file:
+#         json.dump(actual_version, file, indent=4, ensure_ascii=False)
+#     print(f"[+]...Версия {version} сохранена...")
 
 
 # Вход на сервис 1С

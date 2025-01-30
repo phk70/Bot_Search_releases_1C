@@ -14,7 +14,7 @@ async def main():
     await create_all_tables()
     logging.basicConfig(level=logging.INFO)    
     bot = Bot(token=os.getenv('BOT_TOKEN'))
-    dp = Dispatcher(bot)
+    dp = Dispatcher()
     dp.include_router(router)
     await dp.start_polling(bot)
     
