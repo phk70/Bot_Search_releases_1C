@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-
 async def main():
     await create_all_tables()
     logging.basicConfig(level=logging.INFO)    
