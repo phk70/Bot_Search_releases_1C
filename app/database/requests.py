@@ -17,5 +17,6 @@ async def save_version_in_db(version):
     
 async def get_last_version_from_db():
     async with async_session() as session:
-        return await session.scalar(select(Version).order_by(Version.create_data.desc()))
+        last_version = session.scalar(select(Version).order_by(Version.create_data.desc()))
+        return await last_version
 

@@ -6,3 +6,6 @@ start_kb = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text='Ввести ве
 menu = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text='Текущая версия')], 
                                      [KeyboardButton(text='Проверить обновление'), 
                                       KeyboardButton(text='Ввести новую версию')]], resize_keyboard=True)
+
+back = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text='Назад')]], 
+                           resize_keyboard=True)
