@@ -1,18 +1,20 @@
 import time
 import json
+import os
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from dotenv import load_dotenv
-from database.requests import get_last_version_from_db
+import test
+# from database.requests import get_last_version_from_db
 
 load_dotenv()
 
 
 # Вход на сервис 1С
-async def login(url, username, password):
+def login(url, username, password):
     print("[+]...Открываю браузер...")    
     driver = webdriver.Firefox()
     driver.get(url)  # Входим на сайт
@@ -39,13 +41,13 @@ async def login(url, username, password):
     return html
 
 # Поиск всех доступных версий и запись их в файл
-async def search_all_versions(file_name):
+def search_all_versions(html):
     list_releases=[]
 # Открываем html в переменную data
-    with open(file_name, 'r', encoding="utf-8") as file:
-        data = file.read()
+    # with open(file_name, 'r', encoding="utf-8") as file:
+    #     data = file.read()
 # Запихиваем ее в BS4    
-    soup = BeautifulSoup(data, "lxml")
+    soup = BeautifulSoup(html, "lxml")
 # Вытаскиваем таблицу из html
     table = soup.find("table", attrs={'class': 'customTable table-hover'}) 
 # Вытаскиваем все строки (tr) без заголовка
@@ -66,7 +68,7 @@ async def search_all_versions(file_name):
             'update_version': update_version,
         })       
 
-        return list_releases 
+    return list_releases 
     
 
 # # И сохраняем все в json
@@ -76,7 +78,7 @@ async def search_all_versions(file_name):
 
 
 # Поиск обновлений для моей версии
-async def serch_up_for_my_version(list_releases):     
+def serch_up_for_my_version(list_releases):     
 # Добываем текущую версию  
     version = view_version()
 # Открываем файл со всеми версиями на чтение
@@ -105,15 +107,23 @@ async def serch_up_for_my_version(list_releases):
     message_version = f'База "УПП" 1.3\n\nТвоя версия == {version}\nДоступно обновлений этой версии == {count}\n{new_ver}\n\nНе мучай себя и коллег...\nПожалуйста обнови версию...'
     return message_version
 
-async def check_version():
-    html = await login(os.getenv('URL'), os.getenv('LOGIN'), os.getenv('PASSWORD'))
-    list_releases = await search_all_versions(html)
-    my_version = await get_last_version_from_db()
+def check_version():
+    html = login(os.getenv('URL'), os.getenv('LOGIN'), os.getenv('PASSWORD'))
+    list_releases = search_all_versions(html)
+    # my_version = await get_last_version_from_db()
     
-    print(f'Файл HTML == {html}')
     print(f'Список версий == {list_releases}')
-    print(f'Моя версия == {my_version}')
+    '''Список версий == [{'number_version': '1.3.240.1', 'date_release': '30.01.25', 'update_version': '1.3.238.1, 1.3.239.1, 1.3.239.2'}, 
+                         {'number_version': '1.3.239.2', 'date_release': '16.01.25', 'update_version': '1.3.236.1, 1.3.236.2, 1.3.237.1, 1.3.238.1, 1.3.239.1'}, 
+                         {'number_version': '1.3.239.1', 'date_release': '28.12.24', 'update_version': '1.3.236.1, 1.3.236.2, 1.3.237.1, 1.3.238.1'}, 
+                         {'number_version': '1.3.238.1', 'date_release': '19.12.24', 'update_version': '1.3.236.1, 1.3.236.2, 1.3.237.1'}, 
+                         {'number_version': '1.3.237.1', 'date_release': '09.12.24', 'update_version': '1.3.236.1, 1.3.236.2'}, 
+                         {'number_version': '1.3.236.2', 'date_release': '29.11.24', 'update_version': '1.3.235.1, 1.3.235.2, 1.3.236.1'}, 
+                         {'number_version': '1.3.236.1', 'date_release': '25.11.24', 'update_version': '1.3.235.1, 1.3.235.2'}, 
+                         {'number_version': '1.3.235.2', 'date_release': '12.11.24', 'update_version': '1.3.234.1, 1.3.234.2, 1.3.234.3, 1.3.235.1'}, 
+                         {'number_version': '1.3.235.1', 'date_release': '01.11.24', 'update_version': '1.3.234.1, 1.3.234.2, 1.3.234.3'}, 
+                         {'number_version': '1.3.234.3', 'date_release': '04.10.24', 'update_version': '1.3.232.1, 1.3.233.1, 1.3.233.2, 1.3.234.1, 1.3.234.2'}]'''
 
-
+test = check_version()
 
 
